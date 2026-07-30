@@ -19,6 +19,8 @@ app.get("/", (req, res) => {
 
 app.post("/api/stt", upload.single("audio"), async (req, res) => {
   try {
+    console.log("File:", req.file);
+
     if (!req.file) {
       return res.status(400).json({
         error: "Audio file required"
@@ -48,6 +50,8 @@ app.post("/api/stt", upload.single("audio"), async (req, res) => {
 
     const data = await response.json();
 
+    console.log("Groq Response:", data);
+
     if (!response.ok) {
       return res.status(response.status).json(data);
     }
@@ -57,18 +61,18 @@ app.post("/api/stt", upload.single("audio"), async (req, res) => {
       text: data.text
     });
 
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error("STT ERROR:", err);
 
     res.status(500).json({
       error: "STT failed",
-      details: error.message
+      details: err.message
     });
   }
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
   console.log(`NOVIS Backend running on port ${PORT}`);
 });
