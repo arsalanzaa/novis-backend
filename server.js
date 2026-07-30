@@ -1,22 +1,3 @@
-const express = require("express");
-const multer = require("multer");
-const FormData = require("form-data");
-
-const app = express();
-
-app.use(express.json());
-
-const upload = multer({
-  storage: multer.memoryStorage()
-});
-
-app.get("/", (req, res) => {
-  res.json({
-    status: "online",
-    service: "NOVIS Backend"
-  });
-});
-
 app.post("/api/stt", upload.single("audio"), async (req, res) => {
   try {
     if (!req.file) {
@@ -48,6 +29,8 @@ app.post("/api/stt", upload.single("audio"), async (req, res) => {
 
     const data = await response.json();
 
+    console.log("Groq response:", data);
+
     if (!response.ok) {
       return res.status(response.status).json(data);
     }
@@ -58,16 +41,11 @@ app.post("/api/stt", upload.single("audio"), async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("STT ERROR:", error);
 
     res.status(500).json({
-      error: "STT failed"
+      error: "STT failed",
+      details: error.message
     });
   }
-});
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`NOVIS Backend running on port ${PORT}`);
 });
