@@ -39,7 +39,7 @@ app.post("/api/stt", upload.single("audio"), async (req, res) => {
       {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${process.env.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}`,
+          Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
           ...form.getHeaders()
         },
         body: form
